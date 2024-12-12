@@ -2,6 +2,25 @@
 
 This repository implements a simple but realistic RAG pipeline with Large-Language-Models (LLMs) and experiments regarding answer generation given a question and a context. In the example, the "Formula Student Rules" are used but could be replaced by any other corpus (set of documents) or rule-set.
 
+## Formula Student Rules
+
+The basics of the Formula Student Rules are as follows:
+- The Formula Student Rules are a set of rules that are used in the Formula Student competition.
+- The rules are divided into different sections, such as "Chassis", "Powertrain", "Suspension", etc.
+- Each section contains a set of rules that are related to the section.
+- Each rule has a unique identifier, a title, and a description.
+
+An example of a rule is:
+```markdown
+# EV 7 CHARGERS
+
+## EV 7.1 Chargers General Requirements
+
+| EV 7.1.1 | Only chargers presented and sealed at technical inspection are allowed. All connections must be insulated and covered. No open connections are allowed. |
+| EV 7.1.2 | Exposed conductive parts and the TSAC must be connected to protective earth (PE). |
+| EV 7.1.3 | All components interfacing with mains must be accredited to a recognized standard e.g. CE. All remaining parts must comply with all electrical requirements for the vehicle TS. |
+```
+
 ## Embeddings & Embedding Models
 
 The notebook `WordEmbeddingSimilarities.ipynb` contains code to calculate similarities between words using different embedding models. It first creates Question-Answer pairs from the Formula Student Rules and then trains the embeddings. 
@@ -36,3 +55,50 @@ graph LR
 - **Speed & Memory:** They are very fast to compute because they are pre-trained and stored in memory.
 - **Interpretability & User's attention:** This method retrieves only a top-k amount of similar rules, which can be shown to the user. First, this is more interpretable than a black-box model. Second, the user can focus on the most relevant rules and ignore the rest. Therefore, there is no "blind trust" or "black-box" problem.
 
+## Retrieval Augmented Generation (RAG) & LLMs
+Since the embeddings are not able to understand the meaning of a word or sentence, we can use a LLM to generate answers. The LLM can generate answers given a question and a context. The context can be the whole document or a chunk of it. The LLM can be fine-tuned on the Formula Student Rules or any other corpus.
+
+How a basic RAG pipeline would look:
+```mermaid
+graph LR
+    subgraph PreprocessingLlamaIndex
+        direction LR
+        A[Formula Student Rules] --> B(Create Chunks)
+        B --> C(Create Embeddings<br/> -HuggingFace)
+        C --> D((Vector Store))
+    end
+
+    subgraph QueryingGemini
+        direction LR
+        E[User Question] --> F(Retrieve Relevant Chunks)
+        F --> D
+        D --> F
+        F --> G(Construct Prompt)
+        G --> H[Gemini]
+        H --> I[Answer]
+    end
+    
+    
+    classDef default fill:#fff,stroke:#333,stroke-width:1px
+    class A,B,C,E,F,G,H,I default
+    
+```
+
+How would you validate the LLM? You could use the embeddings to retrieve the most similar rules and then compare the generated answer with the most similar rule. This way, you can see if the LLM is able to generate the correct answer given a question and a context. However, this is not a perfect evaluation because the embeddings may not retrieve the most relevant rules. Therefore, you could also use human evaluation to validate the LLM. For this case, one would use a ground-truth dataset with questions and answers and then compare the generated answers with the ground-truth answers.
+
+```mermaid
+graph LR
+    subgraph ValidationProcess["3. Validation"]
+        direction LR
+        J[Ground Truth Q/A Pairs] --> K(Compare with Generated Answers)
+        K --> L{Calculate Metrics}
+        L --> M((Evaluation Report))
+    end
+
+    style ValidationProcess fill:#cfc,stroke:#333,stroke-width:2px 
+
+    classDef default fill:#fff,stroke:#333,stroke-width:1px
+    class A,B,C,E,F,G,H,I,J,K,L,M default
+
+    
+```

@@ -88,7 +88,7 @@ How would you validate the LLM? You could use the embeddings to retrieve the mos
 
 ```mermaid
 graph LR
-    subgraph ValidationProcess["3. Validation"]
+    subgraph ValidationProcess["Validation"]
         direction LR
         J[Ground Truth Q/A Pairs] --> K(Compare with Generated Answers)
         K --> L{Calculate Metrics}

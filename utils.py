@@ -1,5 +1,5 @@
 import re
-from tika import parser # pip install tika
+import pypdfium2 as pdfium
 
 # This function reads the file data/FS-Rules_2024_v1.1.0.txt and extracts the titles and texts of the rules.
 
@@ -20,8 +20,6 @@ from tika import parser # pip install tika
 # arguments:
 # file_name: str: the file name of the rules in .pdf format
 def extract_rules_from_pdf(file_name='data/Rules_2024_v1.1.pdf'):
-    import pypdfium2 as pdfium
-    import re
 
     pdf = pdfium.PdfDocument(file_name)
 

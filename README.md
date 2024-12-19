@@ -1,6 +1,12 @@
-# LLM_RAG
+# Natural Language Processing with Word Embeddings, LLMs and RAG  
 
-This repository implements a simple but realistic RAG pipeline with Large-Language-Models (LLMs) and experiments regarding answer generation given a question and a context. In the example, the "Formula Student Rules" are used but could be replaced by any other corpus (set of documents) or rule-set.
+This repository implements a simple but realistic RAG pipeline with Large-Language-Models (LLMs) and experiments regarding answer generation given a question and a context. In the example, the "Formula Student Rules" are used but could be replaced by any other corpus (set of documents) or rule-set. 
+
+## How is this project related to real-world applications?
+- **Legal Documents:** For example, in the legal domain, one could use a LLM to generate answers given a question and a legal document. This could be used to automate legal research or to help lawyers find relevant information in legal documents.
+- **Input Management:** In the context of input management, one could use a LLM to generate answers given a question and a set of documents. This could be used to automate the processing of incoming emails or to help customer support agents find relevant information in a knowledge base.
+- **Medical Records:** In the medical domain, one could use a LLM to generate answers given a question and a patient's medical record. This could be used to automate the processing of medical records or to help doctors find relevant information in a patient's medical record.
+- **Technical Documentation:** In the technical domain, one could use a LLM to generate answers given a question and a set of technical documents. This could be used to automate the processing of technical documentation or to help engineers find relevant information in technical documents.
 
 ## Formula Student Rules
 
@@ -23,14 +29,14 @@ An example of a rule is:
 
 ## Embeddings & Embedding Models
 
-The notebook `WordEmbeddingSimilarities.ipynb` contains code to calculate similarities between words using different embedding models. It first creates Question-Answer pairs from the Formula Student Rules and then trains the embeddings. 
+The notebook [WordEmbeddingSimilarities.ipynb](WordEmbeddingSimilarities.ipynb) contains code to calculate similarities between words using different embedding models. It first creates a chunk for each rule from the Formula Student Rules and then trains the embeddings. 
 
 How it would look like as a pipeline:
 ```mermaid
 graph LR
     subgraph "Preprocessing"
         direction LR
-        A[Formula Student Rules] --> B(Create Q/A Pairs)
+        A[Formula Student Rules] --> B(Create a chunk for each rule)
         B --> C(Learn Word Embedding Model)
         C --> D((Store Word Embeddings))
     end
@@ -45,6 +51,9 @@ graph LR
     D -.-> C
     
 ```
+### Example Query and Results
+Examples show that the model is able to find suitable rules for a given question, especially when the question contains keywords that are also present in the rules:
+![Alt text](/images/word_embedding_query.png)
 
 
 ### Limitations of embeddings:
@@ -55,10 +64,11 @@ graph LR
 - **Speed & Memory:** They are very fast to compute because they are pre-trained and stored in memory.
 - **Interpretability & User's attention:** This method retrieves only a top-k amount of similar rules, which can be shown to the user. First, this is more interpretable than a black-box model. Second, the user can focus on the most relevant rules and ignore the rest. Therefore, there is no "blind trust" or "black-box" problem.
 
-## Retrieval Augmented Generation (RAG) & LLMs
+
+## Retrieval Augmented Generation (RAG) & Large-Language-Models (LLMs)
 Since the embeddings are not able to understand the meaning of a word or sentence, we can use a LLM to generate answers. The LLM can generate answers given a question and a context. The context can be the whole document or a chunk of it. The LLM can be fine-tuned on the Formula Student Rules or any other corpus.
 
-How a basic RAG pipeline would look:
+How a basic RAG pipeline would look like:
 ```mermaid
 graph LR
     subgraph PreprocessingLlamaIndex
